@@ -22,6 +22,8 @@ namespace WPFApp
     {
         public MainWindow()
         {
+            DataContext = new ViewModel();
+
             InitializeComponent();
         }
     }
