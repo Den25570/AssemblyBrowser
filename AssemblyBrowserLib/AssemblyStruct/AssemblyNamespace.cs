@@ -25,19 +25,33 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
-        //   public ObservableCollection<AssemblyDataType> DataTypes;
-
-        public AssemblyNamespace(Type type)
+        private ObservableCollection<AssemblyDataType> _dataTypes;
+        public ObservableCollection<AssemblyDataType> DataTypes
         {
-            this.name = type.Namespace;
+            get { return _dataTypes; }
+            set
+            {
+                _dataTypes = value;
+                OnPropertyChanged("DataTypes");
+            }
+        } 
+
+        public AssemblyNamespace(string typeName)
+        {
+            this.DataTypes = new ObservableCollection<AssemblyDataType>();
+            this.name = typeName;
+        }
+
+        public void AddType(Type type)
+        {
+            DataTypes.Add(new AssemblyDataType(type));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

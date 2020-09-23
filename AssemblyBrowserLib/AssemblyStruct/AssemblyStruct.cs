@@ -23,12 +23,21 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
+        private Dictionary<string, AssemblyNamespace> namespacessDictionary;
+
         public AssemblyStruct(Assembly assembly)
         {
             Namespaces = new ObservableCollection<AssemblyNamespace>();
+            namespacessDictionary = new Dictionary<string, AssemblyNamespace>();
             foreach (Type type in assembly.GetTypes())
             {
-                Namespaces.Add(new AssemblyNamespace(type));
+                AssemblyNamespace assemblyNamespace;
+                if (!namespacessDictionary.TryGetValue(type.Namespace, out assemblyNamespace))
+                {
+                    assemblyNamespace = new AssemblyNamespace(type.Namespace);
+                    Namespaces.Add(assemblyNamespace);
+                }
+                assemblyNamespace.AddType(type);
             }
         }
 
