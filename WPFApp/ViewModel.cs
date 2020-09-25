@@ -11,23 +11,8 @@ namespace WPFApp
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<AssemblyNamespace> _assemblyname;
-        public ObservableCollection<AssemblyNamespace> assemblyname
-        {
-            get
-            {
-                return _assemblyname;
-            }
-            set
-            {
-                _assemblyname = value;
-                OnPropertyChanged("assemblyname");
-            }
-        }
-
-
         private AssemblyStruct _assemblyStruct;      
-        public AssemblyStruct assemblyStruct { 
+        public AssemblyStruct AssemblyStruct { 
             get 
             {
                 return _assemblyStruct;
@@ -42,8 +27,8 @@ namespace WPFApp
         public ViewModel()
         {
             AssemblyInfo.LoadAssembly();
-            this.assemblyStruct = AssemblyInfo.GetAssemblyInfo();
-            this.assemblyname = assemblyStruct.Namespaces;
+            this.AssemblyStruct = AssemblyInfo.GetAssemblyInfo();
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

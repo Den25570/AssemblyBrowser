@@ -12,18 +12,21 @@ namespace AssemblyBrowserLib.AssemblyStruct
 {
     public class AssemblyStruct : INotifyPropertyChanged
     {
+        private Dictionary<string, AssemblyNamespace> namespacessDictionary;
+
         private ObservableCollection<AssemblyNamespace> _namespaces;
+
         public ObservableCollection<AssemblyNamespace> Namespaces
         {
             get { return _namespaces; }
             set
             {
                 _namespaces = value;
-                OnPropertyChanged("assemblyname");
+                OnPropertyChanged("Namespaces");
             }
         }
 
-        private Dictionary<string, AssemblyNamespace> namespacessDictionary;
+   
 
         public AssemblyStruct(Assembly assembly)
         {
@@ -35,6 +38,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
                 if (!namespacessDictionary.TryGetValue(type.Namespace, out assemblyNamespace))
                 {
                     assemblyNamespace = new AssemblyNamespace(type.Namespace);
+                    namespacessDictionary.Add(type.Namespace, assemblyNamespace);
                     Namespaces.Add(assemblyNamespace);
                 }
                 assemblyNamespace.AddType(type);
