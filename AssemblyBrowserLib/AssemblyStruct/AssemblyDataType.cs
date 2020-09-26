@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
     {
         private string _name;
         private string _fullName;
-        private ObservableCollection<AssemblyField> _fields;
+        private ObservableCollection<AssemblyTypeMember> _fields;
         public string Name
         {
             get { return _name; }
@@ -34,7 +35,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
-        public ObservableCollection<AssemblyField> Fields
+        public ObservableCollection<AssemblyTypeMember> Fields
         {
             get { return _fields; }
             set
@@ -50,32 +51,97 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
             FullName = GetFullName(type);
 
-            Fields = new ObservableCollection<AssemblyField>();
+            Fields = new ObservableCollection<AssemblyTypeMember>();
 
             foreach(var fieldInfo in type.GetFields())
             {
-                Fields.Add(new AssemblyField(fieldInfo));
+                Fields.Add(new AssemblyTypeMember(fieldInfo));
             }
 
             foreach (var properyInfo in type.GetProperties())
             {
-                Fields.Add(new AssemblyField(properyInfo));
+                Fields.Add(new AssemblyTypeMember(properyInfo));
             }
 
             foreach (var methodInfo in type.GetMethods())
             {
-                Fields.Add(new AssemblyField(methodInfo));
+                if (!methodInfo.IsDefined(typeof(ExtensionAttribute), false))
+                {
+                    Fields.Add(new AssemblyTypeMember(methodInfo));
+                }                
+            }
+        }
+
+        public AssemblyDataType(Type extendedType, MethodInfo[] extensionMethods)
+        {
+            Name = extendedType.Name;
+            FullName = GetFullName(extendedType);
+
+            Fields = new ObservableCollection<AssemblyTypeMember>();
+            foreach (var methodInfo in extensionMethods)
+            {
+                Fields.Add(new AssemblyTypeMember(methodInfo));
             }
         }
 
         private string GetFullName(Type type)
         {
-            return (
-                type.IsPublic ? "public " : "private ") + (
-                type.IsAbstract ? "abstract " : "") + (
-                type.IsSealed ? "sealed " : "") + (
-                type.IsClass ? "class " : type.IsValueType ? "struct " : "") +
-                type.Name;
+            string result = GetTypeModifiers(type) + GetTypeAtributes(type) + GetTypeClass(type) + GetTypeGenericName(type);
+            return result;
+        }
+
+        public static string GetTypeGenericName(Type type)
+        {
+            string result = type.Name;
+            var genericArguments = type.GetGenericArguments();
+
+            if (genericArguments.Length > 0)
+            {
+                result += "<" + GetGenericType(genericArguments) + ">";
+            }
+
+            return result;
+        }
+
+        private static string GetGenericType(Type[] t)
+        {
+            string result = "";
+            foreach (var genericType in t)
+            {
+                if (genericType.IsGenericType)
+                    result += genericType.Name + "<" + GetGenericType(genericType.GenericTypeArguments) + ">";
+                else
+                    result += genericType.Name + " ";
+            }
+
+            return result;
+        }
+
+        public string GetTypeModifiers(Type typeInfo)
+        {
+            return typeInfo.IsNestedPrivate ? "private " :
+            typeInfo.IsNestedFamily ? "protected " :
+            typeInfo.IsNestedAssembly ? "internal " ://250 32
+            typeInfo.IsNestedFamORAssem ? "protected internal " :
+            typeInfo.IsNestedFamANDAssem ? "protected private " :
+            typeInfo.IsNestedPublic || typeInfo.IsPublic ? "public " :
+            typeInfo.IsNotPublic ? "private " : "public ";
+        }
+
+        private string GetTypeAtributes(Type typeInfo)
+        {
+            return typeInfo.IsAbstract && typeInfo.IsSealed ? "static ":
+            typeInfo.IsSealed ? "sealed ":
+            typeInfo.IsAbstract ? "abstract ": " ";
+        }
+
+        private string GetTypeClass(Type typeInfo)
+        {
+            return typeInfo.IsInterface ? "interface " :
+            typeInfo.IsEnum ? "enum " :
+            typeInfo.IsValueType ? "struct " :
+            (typeInfo.BaseType == typeof(MulticastDelegate)) ? "delegate " :
+            typeInfo.IsClass ? "class " :  "";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
-    public class AssemblyField : INotifyPropertyChanged
+    public class AssemblyTypeMember : INotifyPropertyChanged
     {
         private string _name;
         private string _fullName;
@@ -25,30 +25,30 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
-        public AssemblyField(FieldInfo fieldInfo)
+        public AssemblyTypeMember(FieldInfo fieldInfo)
         {
             Name = fieldInfo.Name;
             FullName = GetFullName(fieldInfo);
         }
 
-        public AssemblyField(PropertyInfo propertyInfo)
+        public AssemblyTypeMember(PropertyInfo propertyInfo)
         {
             Name = propertyInfo.Name;
             FullName = GetFullName(propertyInfo);
         }
 
-        public AssemblyField(MethodInfo methodInfo)
+        public AssemblyTypeMember(MethodInfo methodInfo)
         {
             Name = methodInfo.Name;
             FullName = GetFullName(methodInfo);
         }
 
-        private string GetFullName(FieldInfo type)
+        private string GetFullName(FieldInfo fieldInfo)
         {
-            return (
-                type.IsPublic ? "public " : "private ") +
-                type.DeclaringType.Name + " " +
-                type.Name;
+            string result = (fieldInfo.IsPublic ? "public " : "private ") +
+                AssemblyDataType.GetTypeGenericName(fieldInfo.DeclaringType);
+
+            return result;
         }
 
         private string GetFullName(MethodInfo methodInfo)
@@ -65,11 +65,11 @@ namespace AssemblyBrowserLib.AssemblyStruct
                     parameter.ParameterType.Name + " " + parameter.Name;
             }
             paramsString += ")";
-            return (
-                methodInfo.IsPublic ? "public " : "private ") + (
-                methodInfo.IsAbstract ? "abstarct " : "") + (
-                methodInfo.IsStatic ? "static " : "") + (
-                methodInfo.ReturnType.Name + " ") +
+
+            return (methodInfo.IsPublic ? "public " : "private ") + 
+                (methodInfo.IsAbstract ? "abstarct " : "") + 
+                (methodInfo.IsStatic ? "static " : "") +
+                AssemblyDataType.GetTypeGenericName(methodInfo.ReturnType) + " " +
                 methodInfo.Name + paramsString;
         }
 

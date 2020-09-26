@@ -1,11 +1,13 @@
 ﻿using AssemblyBrowserLib;
 using AssemblyBrowserLib.AssemblyStruct;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows;
 
 namespace WPFApp
 {
@@ -32,9 +34,20 @@ namespace WPFApp
                 return _loadAssemblyCommand ??
                     (_loadAssemblyCommand = new RelayCommand(obj =>
                     {
-                        Phone phone = new Phone();
-                        Phones.Insert(0, phone);
-                        SelectedPhone = phone;
+                        try
+                        {
+                            // reading selected assembly
+                            OpenFileDialog openFileDialog = new OpenFileDialog();
+                            if (openFileDialog.ShowDialog() == true)
+                            {
+                                AssemblyInfo.LoadAssembly(openFileDialog.FileName);
+                                AssemblyStruct = AssemblyInfo.GetAssemblyInfo();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
                     }));
             }
         }
