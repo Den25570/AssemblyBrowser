@@ -14,7 +14,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
         private string _name;
         private string _fullName;
         private ObservableCollection<AssemblyField> _fields;
-        private ObservableCollection<AssemblyMethod> _methods;
         public string Name
         {
             get { return _name; }
@@ -45,16 +44,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
-        public ObservableCollection<AssemblyMethod> Methods
-        {
-            get { return _methods; }
-            set
-            {
-                _methods = value;
-                OnPropertyChanged("Methods");
-            }
-        }
-
         public AssemblyDataType(Type type)
         {
             Name = type.Name;
@@ -62,7 +51,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
             FullName = GetFullName(type);
 
             Fields = new ObservableCollection<AssemblyField>();
-            Methods = new ObservableCollection<AssemblyMethod>();
 
             foreach(var fieldInfo in type.GetFields())
             {
@@ -76,7 +64,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
             foreach (var methodInfo in type.GetMethods())
             {
-                Methods.Add(new AssemblyMethod(methodInfo));
+                Fields.Add(new AssemblyField(methodInfo));
             }
         }
 

@@ -44,7 +44,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyStruct\AssemblyDataType.cs" />
     <Compile Include="AssemblyStruct\AssemblyField.cs" />
-    <Compile Include="AssemblyStruct\AssemblyMethod.cs" />
     <Compile Include="AssemblyStruct\AssemblyNamespace.cs" />
     <Compile Include="AssemblyStruct\AssemblyStruct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

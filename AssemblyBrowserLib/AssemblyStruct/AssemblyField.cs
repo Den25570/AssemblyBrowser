@@ -37,16 +37,48 @@ namespace AssemblyBrowserLib.AssemblyStruct
             FullName = GetFullName(propertyInfo);
         }
 
+        public AssemblyField(MethodInfo methodInfo)
+        {
+            Name = methodInfo.Name;
+            FullName = GetFullName(methodInfo);
+        }
+
         private string GetFullName(FieldInfo type)
         {
             return (
                 type.IsPublic ? "public " : "private ") +
+                type.DeclaringType.Name + " " +
                 type.Name;
+        }
+
+        private string GetFullName(MethodInfo methodInfo)
+        {
+            string paramsString = "(";
+            foreach(var parameter in methodInfo.GetParameters())
+            {
+                if (paramsString != "(")
+                {
+                    paramsString += " ,";
+                }
+                paramsString += 
+                    parameter.IsOut ? "out " : parameter.IsIn ? "in " : parameter.ParameterType.IsByRef ? "ref " : "" + 
+                    parameter.ParameterType.Name + " " + parameter.Name;
+            }
+            paramsString += ")";
+            return (
+                methodInfo.IsPublic ? "public " : "private ") + (
+                methodInfo.IsAbstract ? "abstarct " : "") + (
+                methodInfo.IsStatic ? "static " : "") + (
+                methodInfo.ReturnType.Name + " ") +
+                methodInfo.Name + paramsString;
         }
 
         private string GetFullName(PropertyInfo type)
         {
-            return type.Name;
+            return type.DeclaringType.Name + " " + type.Name + " " + (
+                type.CanRead ? type.GetGetMethod(false) != null ? "{ public get; " : "{ private get; " : "{") + (
+                type.CanWrite ? type.GetSetMethod(false) != null ? "public set;} " : "private set;}" : "}");
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
