@@ -15,7 +15,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
         private string _name;
         private ObservableCollection<AssemblyDataType> _dataTypes;
 
-        public string Name { get { return _name; } set { _name = value; OnPropertyChanged("name"); } }
+        public string Name { get { return _name; } set { _name = value; OnPropertyChanged("Name"); } }
 
         public ObservableCollection<AssemblyDataType> DataTypes
         {

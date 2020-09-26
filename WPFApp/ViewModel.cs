@@ -20,8 +20,23 @@ namespace WPFApp
             set 
             {
                 _assemblyStruct = value;
-                OnPropertyChanged("assemblyStruct");
+                OnPropertyChanged("AssemblyStruct");
             } 
+        }
+
+        private RelayCommand _loadAssemblyCommand;
+        public RelayCommand LoadAssemblyCommand
+        {
+            get
+            {
+                return _loadAssemblyCommand ??
+                    (_loadAssemblyCommand = new RelayCommand(obj =>
+                    {
+                        Phone phone = new Phone();
+                        Phones.Insert(0, phone);
+                        SelectedPhone = phone;
+                    }));
+            }
         }
 
         public ViewModel()

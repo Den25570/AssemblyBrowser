@@ -5,11 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApp"
         mc:Ignorable="d"
+        x:Name="Window"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel DataContext="{Binding AssemblyStruct}" Margin="4,0,0,69" Orientation="Horizontal" Grid.ColumnSpan="3">
-            <TreeView x:Name="MainTreeView" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
-                      ItemsSource="{Binding Namespaces}" Width="592">
+        <StackPanel 
+            x:Name="MainPanel"
+            DataContext="{Binding AssemblyStruct}" 
+            Margin="5" 
+            Orientation="Horizontal" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Top"   
+            Grid.ColumnSpan="3">
+            <TreeView 
+                x:Name="MainTreeView" 
+                VerticalAlignment="Top"                     
+                ItemsSource="{Binding Namespaces}" HorizontalAlignment="Stretch" Margin="5,5,5,5" >
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding DataTypes}">
                         <TextBlock Text="{Binding Name}"/>
@@ -26,6 +36,16 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
+            <Button 
+                x:Name="LoadAssemblyButton" 
+                Content="LoadAssembly" 
+                Padding="10"
+                RenderTransformOrigin="0.5,0.5"
+                VerticalAlignment="Top"    
+                 Margin="5,5,5,5"
+                >
+            </Button>
+
         </StackPanel>
     </Grid>
 </Window>
