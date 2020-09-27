@@ -31,9 +31,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
             Namespaces = new List<AssemblyNamespace>();
             namespacessDictionary = new Dictionary<string, AssemblyNamespace>();
 
-            //
-            Type[] types = assembly.GetTypes();
-
             foreach (Type type in assembly.GetTypes())
             {
                 if (type.IsSealed && !type.IsGenericType && !type.IsNested)
@@ -88,8 +85,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
