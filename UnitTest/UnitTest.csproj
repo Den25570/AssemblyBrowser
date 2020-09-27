@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssemblyBrowserLib\AssemblyBrowserLib.csproj" />
+    <ProjectReference Include="..\ExtensionMethodsExamples\ExtensionMethodsExamples.csproj" />
   </ItemGroup>
 
 </Project>

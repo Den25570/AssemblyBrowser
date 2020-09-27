@@ -97,7 +97,6 @@ namespace UnitTest
 
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            var a = assembly.GetTypes().GroupBy(type => type.Namespace);
             Assert.AreEqual(assembly.GetTypes().GroupBy(type => type.Namespace).Count(), assemblyStruct.Namespaces.Count());
 
             foreach (var typeGroups in assembly.GetTypes().GroupBy(type => type.Namespace))
@@ -117,6 +116,30 @@ namespace UnitTest
                        assemblyType.Fields.Count());
                 }
             }
+        }
+
+        [Test]
+        public void TestExtensionMethod()
+        {
+            AssemblyInfo.LoadAssembly("ExtensionMethodsExamples.dll");
+            assemblyStruct = AssemblyInfo.GetAssemblyInfo();
+
+            Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
+                assemblyNamespace => assemblyNamespace.Name == "System"));
+
+            Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
+                assemblyNamespace => assemblyNamespace.Name == "System").
+                First().DataTypes.Where(
+                type => type.FullName.Contains("String")));
+
+            AssemblyDataType assemblyDataType = assemblyStruct.Namespaces.Where(
+                assemblyNamespace => assemblyNamespace.Name == "System").
+                First().DataTypes.Where(
+                type => type.FullName.Contains("String")).
+                First();
+
+            Assert.IsNotEmpty(
+                assemblyDataType.Fields.Where(field => field.FullName.Contains("CharCount")));
         }
     }
 }

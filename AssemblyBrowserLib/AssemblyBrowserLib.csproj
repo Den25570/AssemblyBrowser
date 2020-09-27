@@ -48,11 +48,5 @@
     <Compile Include="AssemblyStruct\AssemblyStruct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ExtensionMethodsExamples\ExtensionMethodsExamples.csproj">
-      <Project>{db8ff39f-514f-404d-b05a-495c41bc2561}</Project>
-      <Name>ExtensionMethodsExamples</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
