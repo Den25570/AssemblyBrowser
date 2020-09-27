@@ -14,9 +14,9 @@ namespace AssemblyBrowserLib.AssemblyStruct
     {
         private Dictionary<string, AssemblyNamespace> namespacessDictionary;
 
-        private ObservableCollection<AssemblyNamespace> _namespaces;
+        private List<AssemblyNamespace> _namespaces;
 
-        public ObservableCollection<AssemblyNamespace> Namespaces
+        public List<AssemblyNamespace> Namespaces
         {
             get { return _namespaces; }
             set
@@ -28,7 +28,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
         public AssemblyStruct(Assembly assembly)
         {
-            Namespaces = new ObservableCollection<AssemblyNamespace>();
+            Namespaces = new List<AssemblyNamespace>();
             namespacessDictionary = new Dictionary<string, AssemblyNamespace>();
 
             //
@@ -46,24 +46,33 @@ namespace AssemblyBrowserLib.AssemblyStruct
                     {
                         Type extensionType = methodGroup.Key;
                         AssemblyNamespace assemblyExtensionNamespace = GetOrAddNamespace(extensionType);
-                        assemblyExtensionNamespace.AddType(extensionType, methodGroup.ToArray());
+                        assemblyExtensionNamespace?.AddType(extensionType, methodGroup.ToArray());
                     }
                 }
 
                 AssemblyNamespace assemblyNamespace = GetOrAddNamespace(type);
-                assemblyNamespace.AddType(type);
+                assemblyNamespace?.AddType(type);
             }
         }
 
         private AssemblyNamespace GetOrAddNamespace(Type type)
         {
             AssemblyNamespace assemblyNamespace;
-            if (!namespacessDictionary.TryGetValue(type.Namespace, out assemblyNamespace))
+            try
             {
-                assemblyNamespace = new AssemblyNamespace(type.Namespace);
-                namespacessDictionary.Add(type.Namespace, assemblyNamespace);
-                Namespaces.Add(assemblyNamespace);
+                string namespaceName = type.Namespace ?? "<Without namespace>";
+                if (!namespacessDictionary.TryGetValue(namespaceName, out assemblyNamespace))
+                {
+                    assemblyNamespace = new AssemblyNamespace(namespaceName);
+                    namespacessDictionary.Add(namespaceName, assemblyNamespace);
+                    Namespaces.Add(assemblyNamespace);
+                }
             }
+            catch
+            {
+                assemblyNamespace = null;
+            }
+            
             return assemblyNamespace;
         }
 

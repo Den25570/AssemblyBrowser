@@ -46,7 +46,8 @@ namespace AssemblyBrowserLib.AssemblyStruct
         private string GetFullName(FieldInfo fieldInfo)
         {
             string result = (fieldInfo.IsPublic ? "public " : "private ") +
-                AssemblyDataType.GetTypeGenericName(fieldInfo.DeclaringType);
+                AssemblyDataType.GetTypeGenericName(fieldInfo.FieldType) + " " +
+                fieldInfo.Name;
 
             return result;
         }
@@ -61,7 +62,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
                     paramsString += " ,";
                 }
                 paramsString += 
-                    parameter.IsOut ? "out " : parameter.IsIn ? "in " : parameter.ParameterType.IsByRef ? "ref " : "" + 
+                    (parameter.IsOut ? "out " : parameter.IsIn ? "in " : parameter.ParameterType.IsByRef ? "ref " : "") + 
                     parameter.ParameterType.Name + " " + parameter.Name;
             }
             paramsString += ")";
@@ -75,7 +76,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
         private string GetFullName(PropertyInfo type)
         {
-            return type.DeclaringType.Name + " " + type.Name + " " + (
+            return AssemblyDataType.GetTypeGenericName(type.PropertyType) + " " + type.Name + " " + (
                 type.CanRead ? type.GetGetMethod(false) != null ? "{ public get; " : "{ private get; " : "{") + (
                 type.CanWrite ? type.GetSetMethod(false) != null ? "public set;} " : "private set;}" : "}");
 

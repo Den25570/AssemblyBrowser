@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
-    public class AssemblyDataType : INotifyPropertyChanged
+    public class AssemblyDataType 
     {
         private string _name;
         private string _fullName;
-        private ObservableCollection<AssemblyTypeMember> _fields;
+        private List<AssemblyTypeMember> _fields;
         public string Name
         {
             get { return _name; }
@@ -35,7 +35,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
         }
 
-        public ObservableCollection<AssemblyTypeMember> Fields
+        public List<AssemblyTypeMember> Fields
         {
             get { return _fields; }
             set
@@ -51,19 +51,24 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
             FullName = GetFullName(type);
 
-            Fields = new ObservableCollection<AssemblyTypeMember>();
+            Fields = new List<AssemblyTypeMember>();
 
-            foreach(var fieldInfo in type.GetFields())
+            var flags = BindingFlags.Instance |
+                        BindingFlags.Static |
+                        BindingFlags.NonPublic |
+                        BindingFlags.Public;
+
+            foreach (var fieldInfo in type.GetFields(flags))
             {
                 Fields.Add(new AssemblyTypeMember(fieldInfo));
             }
 
-            foreach (var properyInfo in type.GetProperties())
+            foreach (var properyInfo in type.GetProperties(flags))
             {
                 Fields.Add(new AssemblyTypeMember(properyInfo));
             }
 
-            foreach (var methodInfo in type.GetMethods())
+            foreach (var methodInfo in type.GetMethods(flags))
             {
                 if (!methodInfo.IsDefined(typeof(ExtensionAttribute), false))
                 {
@@ -77,7 +82,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
             Name = extendedType.Name;
             FullName = GetFullName(extendedType);
 
-            Fields = new ObservableCollection<AssemblyTypeMember>();
+            Fields = new List<AssemblyTypeMember>();
             foreach (var methodInfo in extensionMethods)
             {
                 Fields.Add(new AssemblyTypeMember(methodInfo));
@@ -121,7 +126,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
         {
             return typeInfo.IsNestedPrivate ? "private " :
             typeInfo.IsNestedFamily ? "protected " :
-            typeInfo.IsNestedAssembly ? "internal " ://250 32
+            typeInfo.IsNestedAssembly ? "internal " :
             typeInfo.IsNestedFamORAssem ? "protected internal " :
             typeInfo.IsNestedFamANDAssem ? "protected private " :
             typeInfo.IsNestedPublic || typeInfo.IsPublic ? "public " :
@@ -132,7 +137,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
         {
             return typeInfo.IsAbstract && typeInfo.IsSealed ? "static ":
             typeInfo.IsSealed ? "sealed ":
-            typeInfo.IsAbstract ? "abstract ": " ";
+            typeInfo.IsAbstract ? "abstract ": "";
         }
 
         private string GetTypeClass(Type typeInfo)

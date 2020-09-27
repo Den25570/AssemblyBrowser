@@ -14,11 +14,11 @@ namespace AssemblyBrowserLib.AssemblyStruct
     public class AssemblyNamespace : INotifyPropertyChanged
     {
         private string _name;
-        private ObservableCollection<AssemblyDataType> _dataTypes;
+        private List<AssemblyDataType> _dataTypes;
 
         public string Name { get { return _name; } set { _name = value; OnPropertyChanged("Name"); } }
 
-        public ObservableCollection<AssemblyDataType> DataTypes
+        public List<AssemblyDataType> DataTypes
         {
             get { return _dataTypes; }
             set
@@ -30,7 +30,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
         public AssemblyNamespace(string typeName)
         {
-            this.DataTypes = new ObservableCollection<AssemblyDataType>();
+            this.DataTypes = new List<AssemblyDataType>();
             this.Name = typeName;
         }
 
