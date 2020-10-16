@@ -1,5 +1,6 @@
 ﻿using AssemblyBrowserLib;
 using AssemblyBrowserLib.AssemblyStruct;
+using AssemblyBrowserLib.AssemblyStructView;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace WPFApp
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private AssemblyStruct _assemblyStruct;      
-        public AssemblyStruct AssemblyStruct { 
+        private AssemblyStructView _assemblyStruct;      
+        public AssemblyStructView AssemblyStruct { 
             get 
             {
                 return _assemblyStruct;

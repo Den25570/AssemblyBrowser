@@ -10,20 +10,24 @@ namespace AssemblyBrowserLib
 {
     public static class AssemblyInfo
     {
-        private static Assembly loadedAssembly;
+        public static AssemblyStruct.AssemblyStruct assemblyStruct { get; private set; }
+
         public static void LoadAssembly(string path) 
         {
-            loadedAssembly = Assembly.LoadFrom(path);
+            Assembly loadedAssembly = Assembly.LoadFrom(path);
+            assemblyStruct = new AssemblyStruct.AssemblyStruct(loadedAssembly);
+
         }
 
         public static void LoadAssembly()
         {
-            loadedAssembly = Assembly.GetExecutingAssembly();
+            Assembly loadedAssembly = Assembly.GetExecutingAssembly();
+            assemblyStruct = new AssemblyStruct.AssemblyStruct(loadedAssembly);
         }
 
-        public static AssemblyStruct.AssemblyStruct GetAssemblyInfo()
+        public static AssemblyStructView.AssemblyStructView GetAssemblyInfo()
         {
-            return new AssemblyStruct.AssemblyStruct(loadedAssembly);
+            return new AssemblyStructView.AssemblyStructView(assemblyStruct);
         }
 
     }

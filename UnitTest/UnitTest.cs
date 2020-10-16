@@ -28,7 +28,7 @@ namespace UnitTest
         public void Setup()
         {
             AssemblyInfo.LoadAssembly("UnitTest.dll");
-            assemblyStruct = AssemblyInfo.GetAssemblyInfo();
+            assemblyStruct = AssemblyInfo.assemblyStruct;
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace UnitTest
         public void TestExtensionMethod()
         {
             AssemblyInfo.LoadAssembly("ExtensionMethodsExamples.dll");
-            assemblyStruct = AssemblyInfo.GetAssemblyInfo();
+            assemblyStruct = AssemblyInfo.assemblyStruct;
 
             Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == "System"));

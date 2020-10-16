@@ -9,21 +9,11 @@ using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
-    public class AssemblyTypeMember : INotifyPropertyChanged
+    public class AssemblyTypeMember
     {
-        private string _name;
-        private string _fullName;
-        public string Name { get { return _name; } set { _name = value; OnPropertyChanged("Name"); } }
-
-        public string FullName
-        {
-            get { return _fullName; }
-            set
-            {
-                _fullName = value;
-                OnPropertyChanged("FullName");
-            }
-        }
+        public bool IsExtensionMethod;
+        public string Name;
+        public string FullName;
 
         public AssemblyTypeMember(FieldInfo fieldInfo)
         {
@@ -37,10 +27,11 @@ namespace AssemblyBrowserLib.AssemblyStruct
             FullName = GetFullName(propertyInfo);
         }
 
-        public AssemblyTypeMember(MethodInfo methodInfo)
+        public AssemblyTypeMember(MethodInfo methodInfo, bool isExtension = false)
         {
             Name = methodInfo.Name;
             FullName = GetFullName(methodInfo);
+            IsExtensionMethod = isExtension;
         }
 
         private string GetFullName(FieldInfo fieldInfo)
@@ -80,12 +71,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
                 type.CanRead ? type.GetGetMethod(false) != null ? "{ public get; " : "{ private get; " : "{") + (
                 type.CanWrite ? type.GetSetMethod(false) != null ? "public set;} " : "private set;}" : "}");
 
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

@@ -12,38 +12,10 @@ namespace AssemblyBrowserLib.AssemblyStruct
 {
     public class AssemblyDataType 
     {
-        private string _name;
-        private string _fullName;
-        private List<AssemblyTypeMember> _fields;
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                OnPropertyChanged("Name");
-            }
-        }
-
-        public string FullName
-        {
-            get { return _fullName; }
-            set
-            {
-                _fullName = value;
-                OnPropertyChanged("FullName");
-            }
-        }
-
-        public List<AssemblyTypeMember> Fields
-        {
-            get { return _fields; }
-            set
-            {
-                _fields = value;
-                OnPropertyChanged("Fields");
-            }
-        }
+        public string Name;
+        public string FullName;
+        public List<AssemblyTypeMember> Fields;
+        
 
         public AssemblyDataType(Type type)
         {
@@ -85,7 +57,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
             Fields = new List<AssemblyTypeMember>();
             foreach (var methodInfo in extensionMethods)
             {
-                Fields.Add(new AssemblyTypeMember(methodInfo));
+                Fields.Add(new AssemblyTypeMember(methodInfo, true));
             }
         }
 
@@ -148,12 +120,5 @@ namespace AssemblyBrowserLib.AssemblyStruct
             (typeInfo.BaseType == typeof(MulticastDelegate)) ? "delegate " :
             typeInfo.IsClass ? "class " :  "";
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-
     }
 }

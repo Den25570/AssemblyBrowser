@@ -10,21 +10,10 @@ using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
-    public class AssemblyStruct : INotifyPropertyChanged
+    public class AssemblyStruct
     {
         private Dictionary<string, AssemblyNamespace> namespacessDictionary;
-
-        private List<AssemblyNamespace> _namespaces;
-
-        public List<AssemblyNamespace> Namespaces
-        {
-            get { return _namespaces; }
-            set
-            {
-                _namespaces = value;
-                OnPropertyChanged("Namespaces");
-            }
-        }
+        public List<AssemblyNamespace> Namespaces;
 
         public AssemblyStruct(Assembly assembly)
         {
@@ -80,12 +69,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
                         where method.IsDefined(typeof(ExtensionAttribute), false)
                         select method;
             return query;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
