@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyData\DataAccessModificator.cs" />
+    <Compile Include="AssemblyData\DataTypeAttribute.cs" />
+    <Compile Include="AssemblyData\DataTypeClass.cs" />
+    <Compile Include="AssemblyData\PropertyType.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyStructView\AssemblyDataTypeView.cs" />
     <Compile Include="AssemblyStructView\AssemblyNamespaceView.cs" />

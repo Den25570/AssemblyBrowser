@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssemblyBrowserLib.AssemblyData;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,33 +13,72 @@ namespace AssemblyBrowserLib.AssemblyStruct
     public class AssemblyTypeMember
     {
         public bool IsExtensionMethod;
-        public string Name;
-        public string FullName;
+        public bool IsGenerated;
 
-        public AssemblyTypeMember(FieldInfo fieldInfo)
-        {
-            Name = fieldInfo.Name;
-            FullName = GetFullName(fieldInfo);
+        private string name;
+        private DataAccessModificator.DataAccessModificatorEnum accessModificator;
+        private DataAttribute.DataTypeAttributeEnum typeAttribute;
+        private PropertyType.PropertyTypeEnum getMethodAccessModificator;
+        private PropertyType.PropertyTypeEnum setMethodAccessModificator;
+
+        private MemberInfo memberInfo;
+
+        public string FullName {
+            get {
+                if (memberInfo is FieldInfo)
+                {
+                    return GetFullName(memberInfo as FieldInfo);
+                }
+                else if(memberInfo is PropertyInfo)
+                {
+                    return GetFullName(memberInfo as PropertyInfo);
+                }
+                else if(memberInfo is MethodInfo)
+                {
+                    return GetFullName(memberInfo as MethodInfo);
+                }
+                return "";
+            } 
         }
 
-        public AssemblyTypeMember(PropertyInfo propertyInfo)
+        public AssemblyTypeMember(FieldInfo fieldInfo, bool isGenerated)
         {
-            Name = propertyInfo.Name;
-            FullName = GetFullName(propertyInfo);
+            name = fieldInfo.Name;
+            IsGenerated = isGenerated;
+            memberInfo = fieldInfo;
+
+            accessModificator = DataAccessModificator.GetTypeModifiers(fieldInfo);
         }
 
-        public AssemblyTypeMember(MethodInfo methodInfo, bool isExtension = false)
+        public AssemblyTypeMember(PropertyInfo propertyInfo, bool isGenerated)
         {
-            Name = methodInfo.Name;
-            FullName = GetFullName(methodInfo);
+            name = propertyInfo.Name;
+            IsGenerated = isGenerated;
+            memberInfo = propertyInfo;
+
+            getMethodAccessModificator = PropertyType.GetGetPropertyType(propertyInfo);
+            setMethodAccessModificator = PropertyType.GetSetPropertyType(propertyInfo);
+        }
+
+        public AssemblyTypeMember(MethodInfo methodInfo, bool isGenerated, bool isExtension = false)
+        {
+            name = methodInfo.Name;
+            IsGenerated = isGenerated;
             IsExtensionMethod = isExtension;
+            memberInfo = methodInfo;
+
+            accessModificator = DataAccessModificator.GetTypeModifiers(methodInfo);
+            typeAttribute = DataAttribute.GetAttributes(methodInfo);
         }
 
         private string GetFullName(FieldInfo fieldInfo)
         {
-            string result = (fieldInfo.IsPublic ? "public " : "private ") +
+
+
+            string result = 
+                DataAccessModificator.GetString(accessModificator) + " " +
                 AssemblyDataType.GetTypeGenericName(fieldInfo.FieldType) + " " +
-                fieldInfo.Name;
+                name;
 
             return result;
         }
@@ -58,18 +98,25 @@ namespace AssemblyBrowserLib.AssemblyStruct
             }
             paramsString += ")";
 
-            return (methodInfo.IsPublic ? "public " : "private ") + 
-                (methodInfo.IsAbstract ? "abstarct " : "") + 
-                (methodInfo.IsStatic ? "static " : "") +
+            string typeAttributeString = DataAttribute.GetString(typeAttribute);
+
+            return
+                DataAccessModificator.GetString(accessModificator) + " " +
+               (typeAttributeString != "" ? typeAttributeString + " " : "") + 
                 AssemblyDataType.GetTypeGenericName(methodInfo.ReturnType) + " " +
-                methodInfo.Name + paramsString;
+                name + paramsString;
         }
 
         private string GetFullName(PropertyInfo type)
         {
-            return AssemblyDataType.GetTypeGenericName(type.PropertyType) + " " + type.Name + " " + (
-                type.CanRead ? type.GetGetMethod(false) != null ? "{ public get; " : "{ private get; " : "{") + (
-                type.CanWrite ? type.GetSetMethod(false) != null ? "public set;} " : "private set;}" : "}");
+            string getString = PropertyType.GetGetString(getMethodAccessModificator);
+            string setString = PropertyType.GetSetString(setMethodAccessModificator);
+
+            return
+                AssemblyDataType.GetTypeGenericName(type.PropertyType) + " " +
+                name + " { " +
+                (getString != "" ? getString + "; " : "") +
+                (setString != "" ? setString + "; }" : " }");
 
         }
     }

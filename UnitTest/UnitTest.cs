@@ -61,12 +61,9 @@ namespace UnitTest
                 type => type.FullName == "public class Tests").
                 First();
 
-            Assert.IsNotEmpty(
-                assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testField"));
-            Assert.IsNotEmpty(
-               assemblyDataType.Fields.Where(field => field.FullName == "Int32 testProperty { private get; private set;}"));
-            Assert.IsNotEmpty(
-               assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testMethod(in Int32& testParam)"));
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testField").Count());
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "Int32 testProperty { private get; private set; }").Count());
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testMethod(in Int32& testParam)").Count());
         }
 
         [Test]
