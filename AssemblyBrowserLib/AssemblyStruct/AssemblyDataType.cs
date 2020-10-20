@@ -31,7 +31,7 @@ namespace AssemblyBrowserLib.AssemblyStruct
                     (accessModificatorString != "" ? (accessModificatorString + " ") : "") +
                     (typeAttributeString != "" ? (typeAttributeString + " ") : "") +
                     (typeClassString != "" ? (typeClassString + " ") : "") +
-                    type ?? GetTypeGenericName(type);
+                    GetTypeGenericName(type);
             } 
         }
 
@@ -72,10 +72,16 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
         public AssemblyDataType(Type extendedType, MethodInfo[] extensionMethods)
         {
+            Name = extendedType.Name;
+            accessModificator = DataAccessModificator.GetTypeModifiers(extendedType);
+            typeAttribute = DataAttribute.GetTypeAtributes(extendedType);
+            typeClass = DataTypeClass.GetTypeClass(extendedType);
+            this.type = extendedType;
+
             Fields = new List<AssemblyTypeMember>();
             foreach (var methodInfo in extensionMethods)
             {
-                Fields.Add(new AssemblyTypeMember(methodInfo, true));
+                Fields.Add(new AssemblyTypeMember(methodInfo, IsCompilerGenerated(methodInfo), true));
             }
         }
 
