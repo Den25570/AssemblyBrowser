@@ -29,10 +29,12 @@ namespace AssemblyBrowserLib.AssemblyStructView
             }
         }
 
-        public AssemblyNamespaceView(AssemblyNamespace assemblyNamespace)
+        public AssemblyNamespaceView(AssemblyNamespace assemblyNamespace, bool HideGenerated)
         {
             Name = assemblyNamespace.Name;
-            DataTypes = assemblyNamespace.DataTypes.ConvertAll<AssemblyDataTypeView>(dataType => new AssemblyDataTypeView(dataType));
+            DataTypes = assemblyNamespace.DataTypes
+                .Where(dataType => !(dataType.IsGenerated && HideGenerated)).ToList()
+                .ConvertAll<AssemblyDataTypeView>(dataType => new AssemblyDataTypeView(dataType, HideGenerated));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

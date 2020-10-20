@@ -42,7 +42,7 @@ namespace WPFApp
                             if (openFileDialog.ShowDialog() == true)
                             {
                                 AssemblyInfo.LoadAssembly(openFileDialog.FileName);
-                                AssemblyStruct = AssemblyInfo.GetAssemblyInfo();
+                                AssemblyStruct = AssemblyInfo.GetAssemblyInfo(HideGenerated);
                             }
                         }
                         catch (Exception ex)
@@ -53,10 +53,12 @@ namespace WPFApp
             }
         }
 
+        public bool HideGenerated = true;
+
         public ViewModel()
         {
             AssemblyInfo.LoadAssembly();
-            this.AssemblyStruct = AssemblyInfo.GetAssemblyInfo();
+            this.AssemblyStruct = AssemblyInfo.GetAssemblyInfo(HideGenerated);
 
         }
 

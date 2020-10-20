@@ -25,9 +25,9 @@ namespace AssemblyBrowserLib
             assemblyStruct = new AssemblyStruct.AssemblyStruct(loadedAssembly);
         }
 
-        public static AssemblyStructView.AssemblyStructView GetAssemblyInfo()
+        public static AssemblyStructView.AssemblyStructView GetAssemblyInfo(bool HideGenerated)
         {
-            return new AssemblyStructView.AssemblyStructView(assemblyStruct);
+            return new AssemblyStructView.AssemblyStructView(assemblyStruct, HideGenerated);
         }
 
     }

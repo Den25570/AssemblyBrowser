@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyData
 {
-    public class DataTypeClass
+    public static class DataTypeClass
     {
         public enum DataTypeClassEnum
         {

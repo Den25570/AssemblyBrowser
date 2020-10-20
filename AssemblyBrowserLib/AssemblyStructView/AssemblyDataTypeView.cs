@@ -37,10 +37,12 @@ namespace AssemblyBrowserLib.AssemblyStructView
             }
         }
 
-        public AssemblyDataTypeView(AssemblyDataType dataType)
+        public AssemblyDataTypeView(AssemblyDataType dataType, bool HideGenerated)
         {
             FullName = dataType.FullName;
-            Fields = dataType.Fields.ConvertAll<AssemblyTypeMemberView>(member => new AssemblyTypeMemberView(member));
+            Fields = dataType.Fields
+                .Where(member => !(member.IsGenerated && HideGenerated)).ToList()
+                .ConvertAll<AssemblyTypeMemberView>(member => new AssemblyTypeMemberView(member));
         }
 
 

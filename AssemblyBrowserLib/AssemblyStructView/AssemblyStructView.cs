@@ -25,9 +25,9 @@ namespace AssemblyBrowserLib.AssemblyStructView
             }
         }
 
-        public AssemblyStructView(AssemblyStruct.AssemblyStruct assemblyStruct)
+        public AssemblyStructView(AssemblyStruct.AssemblyStruct assemblyStruct, bool HideGenerated)
         {
-            Namespaces = assemblyStruct.Namespaces.ConvertAll<AssemblyNamespaceView>(assemblyNamespace => new AssemblyNamespaceView(assemblyNamespace));
+            Namespaces = assemblyStruct.Namespaces.ConvertAll<AssemblyNamespaceView>(assemblyNamespace => new AssemblyNamespaceView(assemblyNamespace, HideGenerated));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
