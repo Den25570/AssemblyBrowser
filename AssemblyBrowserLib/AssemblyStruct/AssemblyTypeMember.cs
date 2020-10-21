@@ -15,13 +15,12 @@ namespace AssemblyBrowserLib.AssemblyStruct
         public bool IsExtensionMethod;
         public bool IsGenerated;
 
-        private string name;
-        private DataAccessModificator.DataAccessModificatorEnum accessModificator;
-        private DataAttribute.DataTypeAttributeEnum typeAttribute;
-        private PropertyType.PropertyTypeEnum getMethodAccessModificator;
-        private PropertyType.PropertyTypeEnum setMethodAccessModificator;
-
-        private MemberInfo memberInfo;
+        public string name;
+        public DataAccessModificator.DataAccessModificatorEnum accessModificator;
+        public DataAttribute.DataTypeAttributeEnum typeAttribute;
+        public PropertyType.PropertyTypeEnum getMethodAccessModificator;
+        public PropertyType.PropertyTypeEnum setMethodAccessModificator;
+        public MemberInfo memberInfo;
 
         public string FullName {
             get {

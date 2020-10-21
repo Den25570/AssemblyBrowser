@@ -17,10 +17,10 @@ namespace AssemblyBrowserLib.AssemblyStruct
         public bool IsGenerated;
         public string Name;
 
-        private Type type;
-        private DataAccessModificator.DataAccessModificatorEnum accessModificator;
-        private DataAttribute.DataTypeAttributeEnum typeAttribute;
-        private DataTypeClass.DataTypeClassEnum typeClass;
+        public Type type;
+        public DataAccessModificator.DataAccessModificatorEnum accessModificator;
+        public DataAttribute.DataTypeAttributeEnum typeAttribute;
+        public DataTypeClass.DataTypeClassEnum typeClass;
 
         public string FullName { 
             get {
@@ -49,7 +49,8 @@ namespace AssemblyBrowserLib.AssemblyStruct
             var flags = BindingFlags.Instance |
                         BindingFlags.Static |
                         BindingFlags.NonPublic |
-                        BindingFlags.Public;
+                        BindingFlags.Public | 
+                        BindingFlags.DeclaredOnly;
 
             foreach (var fieldInfo in type.GetFields(flags))
             {
@@ -88,25 +89,31 @@ namespace AssemblyBrowserLib.AssemblyStruct
         public static string GetTypeGenericName(Type type)
         {
             string result = type.Name;
-            var genericArguments = type.GetGenericArguments();
 
+            var genericArguments = type.GetGenericArguments();
             if (genericArguments.Length > 0)
             {
+                result = result.Substring(0, result.IndexOf('`'));
                 result += "<" + GetGenericType(genericArguments) + ">";
             }
 
             return result;
         }
 
-        private static string GetGenericType(Type[] t)
+        private static string GetGenericType(Type[] types)
         {
             string result = "";
-            foreach (var genericType in t)
+            bool isFirst = true;
+            foreach (var genericType in types)
             {
-                if (genericType.IsGenericType)
-                    result += genericType.Name + "<" + GetGenericType(genericType.GenericTypeArguments) + ">";
+                if (!isFirst)
+                    result += ", ";
                 else
-                    result += genericType.Name + " ";
+                    isFirst = false;
+                if (genericType.IsGenericType)
+                    result += genericType.Name.Substring(0, genericType.Name.IndexOf('`')) + "<" + GetGenericType(genericType.GenericTypeArguments) + ">";
+                else
+                    result += genericType.Name;
             }
 
             return result;
@@ -114,8 +121,21 @@ namespace AssemblyBrowserLib.AssemblyStruct
 
         bool IsCompilerGenerated(MemberInfo member)
         {
-            var attr = Attribute.GetCustomAttribute(member, typeof(CompilerGeneratedAttribute));
-            return attr != null;
+            bool compilerGenerated = false;
+
+            compilerGenerated |= (Attribute.GetCustomAttribute(member, typeof(CompilerGeneratedAttribute)) != null);
+
+
+            if (member is MethodInfo)
+            {
+                compilerGenerated |= (member as MethodInfo).IsSpecialName;
+            }
+            else if (member is PropertyInfo)
+            {
+                compilerGenerated |= (member as PropertyInfo).IsSpecialName;
+            }
+
+            return compilerGenerated;
         }
     }
 }

@@ -72,12 +72,12 @@ namespace UnitTest
             Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "private sealed struct TestStruct`1<T >"));
+                type => type.FullName == "private sealed struct TestStruct<T>"));
 
            AssemblyDataType assemblyDataType = assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "private sealed struct TestStruct`1<T >").
+                type => type.FullName == "private sealed struct TestStruct<T>").
                 First();
 
             Assert.IsNotEmpty(
@@ -90,7 +90,8 @@ namespace UnitTest
             var flags = BindingFlags.Instance |
             BindingFlags.Static |
             BindingFlags.NonPublic |
-            BindingFlags.Public;
+            BindingFlags.Public | 
+            BindingFlags.DeclaredOnly;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
 
