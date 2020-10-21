@@ -93,8 +93,8 @@ namespace AssemblyBrowserLib.AssemblyStruct
                     paramsString += " ,";
                 }
                 paramsString += 
-                    (parameter.IsOut ? "out " : parameter.IsIn ? "in " : parameter.ParameterType.IsByRef ? "ref " : "") + 
-                    parameter.ParameterType.Name + " " + parameter.Name;
+                    (parameter.IsOut ? "out " : parameter.IsIn ? "in " : parameter.ParameterType.IsByRef ? "ref " : "") +
+                    AssemblyDataType.GetTypeGenericName(parameter.ParameterType) + " " + parameter.Name;
             }
             paramsString += ")";
 
