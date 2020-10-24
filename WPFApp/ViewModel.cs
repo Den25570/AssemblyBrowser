@@ -3,11 +3,9 @@ using AssemblyBrowserLib.AssemblyStruct;
 using AssemblyBrowserLib.AssemblyStructView;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 
 namespace WPFApp
@@ -41,8 +39,9 @@ namespace WPFApp
                             OpenFileDialog openFileDialog = new OpenFileDialog();
                             if (openFileDialog.ShowDialog() == true)
                             {
-                                AssemblyInfo.LoadAssembly(openFileDialog.FileName);
-                                AssemblyStruct = AssemblyInfo.GetAssemblyInfo(HideGenerated);
+                                Assembly currentAssembly = Assembly.LoadFrom(openFileDialog.FileName);
+                                AssemblyStruct assemblyStruct = new AssemblyStruct(currentAssembly);
+                                this.AssemblyStruct = new AssemblyStructView(assemblyStruct, HideGenerated);
                             }
                         }
                         catch (Exception ex)
@@ -57,8 +56,9 @@ namespace WPFApp
 
         public ViewModel()
         {
-            AssemblyInfo.LoadAssembly();
-            this.AssemblyStruct = AssemblyInfo.GetAssemblyInfo(HideGenerated);
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            AssemblyStruct assemblyStruct = new AssemblyStruct(currentAssembly);
+            this.AssemblyStruct = new AssemblyStructView(assemblyStruct, HideGenerated);
 
         }
 

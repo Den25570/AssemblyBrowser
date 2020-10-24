@@ -13,26 +13,25 @@ namespace AssemblyBrowserLib.AssemblyStruct
 {
     public class AssemblyDataType 
     {
-        public List<AssemblyTypeMember> Fields;
-        public bool IsGenerated;
-        public string Name;
+        public readonly List<AssemblyTypeMember> Fields;
+        public readonly bool IsGenerated;
+        public readonly string Name;
 
-        public Type type;
-        public DataAccessModificator.DataAccessModificatorEnum accessModificator;
-        public DataAttribute.DataTypeAttributeEnum typeAttribute;
-        public DataTypeClass.DataTypeClassEnum typeClass;
+        public readonly Type type;
+        public readonly DataAccessModificator.DataAccessModificatorEnum accessModificator;
+        public readonly DataAttribute.DataTypeAttributeEnum typeAttribute;
+        public readonly DataTypeClass.DataTypeClassEnum typeClass;
 
-        public string FullName { 
-            get {
-                string accessModificatorString = DataAccessModificator.GetString(accessModificator);
-                string typeAttributeString = DataAttribute.GetString(typeAttribute);
-                string typeClassString = DataTypeClass.GetString(typeClass);
-                return
-                    (accessModificatorString != "" ? (accessModificatorString + " ") : "") +
-                    (typeAttributeString != "" ? (typeAttributeString + " ") : "") +
-                    (typeClassString != "" ? (typeClassString + " ") : "") +
-                    GetTypeGenericName(type);
-            } 
+        public string GetFullName()
+        {
+            string accessModificatorString = DataAccessModificator.GetString(accessModificator);
+            string typeAttributeString = DataAttribute.GetString(typeAttribute);
+            string typeClassString = DataTypeClass.GetString(typeClass);
+            return
+                (accessModificatorString != "" ? (accessModificatorString + " ") : "") +
+                (typeAttributeString != "" ? (typeAttributeString + " ") : "") +
+                (typeClassString != "" ? (typeClassString + " ") : "") +
+                GetTypeGenericName(type);
         }
 
         public AssemblyDataType(Type type)
@@ -124,7 +123,6 @@ namespace AssemblyBrowserLib.AssemblyStruct
             bool compilerGenerated = false;
 
             compilerGenerated |= (Attribute.GetCustomAttribute(member, typeof(CompilerGeneratedAttribute)) != null);
-
 
             if (member is MethodInfo)
             {

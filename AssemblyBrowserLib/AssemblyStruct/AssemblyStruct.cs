@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
     public class AssemblyStruct
     {
         private Dictionary<string, AssemblyNamespace> namespacessDictionary;
-        public List<AssemblyNamespace> Namespaces;
+        public readonly List<AssemblyNamespace> Namespaces;
 
         public AssemblyStruct(Assembly assembly)
         {

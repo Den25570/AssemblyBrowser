@@ -1,7 +1,6 @@
 using AssemblyBrowserLib;
 using AssemblyBrowserLib.AssemblyStruct;
 using NUnit.Framework;
-using System;
 using System.Linq;
 using System.Reflection;
 
@@ -27,8 +26,7 @@ namespace UnitTest
         [SetUp]
         public void Setup()
         {
-            AssemblyInfo.LoadAssembly("UnitTest.dll");
-            assemblyStruct = AssemblyInfo.assemblyStruct;
+            assemblyStruct = new AssemblyStruct(Assembly.LoadFrom("UnitTest.dll"));
         }
 
         [Test]
@@ -49,7 +47,7 @@ namespace UnitTest
                 assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "public class Tests"));
+                type => type.GetFullName() == "public class Tests"));
         }
 
         [Test]
@@ -58,12 +56,12 @@ namespace UnitTest
             AssemblyDataType assemblyDataType = assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "public class Tests").
+                type => type.GetFullName() == "public class Tests").
                 First();
 
-            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testField").Count());
-            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "Int32 testProperty { private get; private set; }").Count());
-            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.FullName == "private Int32 testMethod(in Int32& testParam)").Count());
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.GetFullName() == "private Int32 testField").Count());
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.GetFullName() == "Int32 testProperty { private get; private set; }").Count());
+            Assert.AreEqual(1, assemblyDataType.Fields.Where(field => field.GetFullName() == "private Int32 testMethod(in Int32& testParam)").Count());
         }
 
         [Test]
@@ -72,18 +70,18 @@ namespace UnitTest
             Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "private sealed struct TestStruct<T>"));
+                type => type.GetFullName() == "private sealed struct TestStruct<T>"));
 
            AssemblyDataType assemblyDataType = assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == typeof(Tests).Namespace).
                 First().DataTypes.Where(
-                type => type.FullName == "private sealed struct TestStruct<T>").
+                type => type.GetFullName() == "private sealed struct TestStruct<T>").
                 First();
 
             Assert.IsNotEmpty(
-                assemblyDataType.Fields.Where(field => field.FullName == "public T testT"));
+                assemblyDataType.Fields.Where(field => field.GetFullName() == "public T testT"));
         }
-
+        
         [Test]
         public void TestCounting()
         {
@@ -93,51 +91,36 @@ namespace UnitTest
             BindingFlags.Public | 
             BindingFlags.DeclaredOnly;
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            Assert.AreEqual(2, assemblyStruct.Namespaces.Count());
 
-            Assert.AreEqual(assembly.GetTypes().GroupBy(type => type.Namespace).Count(), assemblyStruct.Namespaces.Count());
+            var dataTypes = assemblyStruct.Namespaces.Where(@namespace => @namespace.Name == "UnitTest").First().DataTypes;
+            Assert.AreEqual(4, dataTypes.Count());
 
-            foreach (var typeGroups in assembly.GetTypes().GroupBy(type => type.Namespace))
-            {
-                var assemblyNamespace = assemblyStruct.Namespaces.Where(
-                    assemblyNamespace => assemblyNamespace.Name == (typeGroups.Key ?? "<Without namespace>")).First();
-
-                Assert.AreEqual(typeGroups.ToList().Count(), assemblyNamespace.DataTypes.Count());
-
-                foreach (var type in typeGroups.ToList())
-                {
-                    var assemblyType = assemblyNamespace.DataTypes.Where(
-                    assemblyType => assemblyType.Name == type.Name).First();
-
-                    Assert.AreEqual(
-                        type.GetFields(flags).Count() + type.GetProperties(flags).Count() + type.GetMethods(flags).Count(),
-                       assemblyType.Fields.Count());
-                }
-            }
+            var typeMembers = dataTypes.Where(member => member.Name == "Tests").First().Fields;
+            Assert.AreEqual(14, typeMembers.Count());
         }
 
         [Test]
         public void TestExtensionMethod()
         {
-            AssemblyInfo.LoadAssembly("ExtensionMethodsExamples.dll");
-            assemblyStruct = AssemblyInfo.assemblyStruct;
+            assemblyStruct = new AssemblyStruct(Assembly.LoadFrom("ExtensionMethodsExamples.dll"));
 
-            Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
-                assemblyNamespace => assemblyNamespace.Name == "System"));
+            Assert.AreEqual(1, assemblyStruct.Namespaces.Where(
+                assemblyNamespace => assemblyNamespace.Name == "System").Count());
 
-            Assert.IsNotEmpty(assemblyStruct.Namespaces.Where(
+            Assert.AreEqual(1, assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == "System").
                 First().DataTypes.Where(
-                type => type.FullName.Contains("String")));
+                type => type.GetFullName().Contains("String")).Count());
 
             AssemblyDataType assemblyDataType = assemblyStruct.Namespaces.Where(
                 assemblyNamespace => assemblyNamespace.Name == "System").
                 First().DataTypes.Where(
-                type => type.FullName.Contains("String")).
+                type => type.GetFullName().Contains("String")).
                 First();
 
-            Assert.IsNotEmpty(
-                assemblyDataType.Fields.Where(field => field.FullName.Contains("CharCount")));
+            Assert.AreEqual(1, 
+                assemblyDataType.Fields.Where(field => field.GetFullName().Contains("CharCount")).Count());
         }
     }
 }

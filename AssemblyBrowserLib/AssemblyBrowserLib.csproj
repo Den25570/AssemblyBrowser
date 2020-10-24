@@ -45,15 +45,14 @@
     <Compile Include="AssemblyData\DataTypeAttribute.cs" />
     <Compile Include="AssemblyData\DataTypeClass.cs" />
     <Compile Include="AssemblyData\PropertyType.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AssemblyStructView\AssemblyDataTypeView.cs" />
-    <Compile Include="AssemblyStructView\AssemblyNamespaceView.cs" />
-    <Compile Include="AssemblyStructView\AssemblyStructView.cs" />
-    <Compile Include="AssemblyStructView\AssemblyTypeMemberView.cs" />
     <Compile Include="AssemblyStruct\AssemblyDataType.cs" />
     <Compile Include="AssemblyStruct\AssemblyTypeMember.cs" />
     <Compile Include="AssemblyStruct\AssemblyNamespace.cs" />
     <Compile Include="AssemblyStruct\AssemblyStruct.cs" />
+    <Compile Include="AssemblyStruct\TypeMembers\TypeField.cs" />
+    <Compile Include="AssemblyStruct\TypeMembers\TypeMember.cs" />
+    <Compile Include="AssemblyStruct\TypeMembers\TypeMethod.cs" />
+    <Compile Include="AssemblyStruct\TypeMembers\TypeProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

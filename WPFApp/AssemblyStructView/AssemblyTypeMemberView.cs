@@ -1,12 +1,7 @@
 ﻿using AssemblyBrowserLib.AssemblyStruct;
-using System;
-using System.Collections.Generic;
+using AssemblyBrowserLib.AssemblyStruct.TypeMembers;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStructView
 {
@@ -26,7 +21,8 @@ namespace AssemblyBrowserLib.AssemblyStructView
 
         public AssemblyTypeMemberView(AssemblyTypeMember member)
         {
-            FullName = member.FullName + (member.IsExtensionMethod ? "(Extension method)" : "");
+            bool isExtension = (member.typeMember is TypeMethod) ? (member.typeMember as TypeMethod).IsExtensionMethod : false;
+            FullName = member.GetFullName() + (isExtension ? "(Extension method)" : "");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

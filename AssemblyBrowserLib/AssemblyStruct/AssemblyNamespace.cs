@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssemblyBrowserLib.AssemblyStruct
 {
     public class AssemblyNamespace
     {
-        public string Name;
-        public List<AssemblyDataType> DataTypes;
+        public readonly string Name;
+        public readonly List<AssemblyDataType> DataTypes;
 
         public AssemblyNamespace(string typeName)
         {
